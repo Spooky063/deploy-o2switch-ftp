@@ -20,26 +20,36 @@ jobs:
 
     steps:
       - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
-          cat >>~/.ssh/config <<END
-          Host *
-            LogLevel VERBOSE
-          Host app
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/staging.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/github
+        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/github
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      
+      - name: Connect
+      run: ssh -vvv ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami"
 
-      - name: Try to launch command
-        run: ssh app 'whoami'
+      - name: Cleanup
+      run: rm -rf ~/.ssh/
+      
+      #     mkdir -p ~/.ssh/
+      #     echo "$SSH_KEY" > ~/.ssh/staging.key
+      #     chmod 600 ~/.ssh/staging.key
+      #     cat >>~/.ssh/config <<END
+      #     Host *
+      #       LogLevel VERBOSE
+      #     Host app
+      #       HostName $SSH_HOST
+      #       User $SSH_USER
+      #       IdentityFile ~/.ssh/staging.key
+      #       StrictHostKeyChecking no
+      #     END
+      #   env:
+      #     SSH_USER: ${{ secrets.SSH_USER }}
+      #     SSH_KEY: ${{ secrets.SSH_KEY }}
+      #     SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      # - name: Try to launch command
+      #   run: ssh app 'whoami'
 
   # deploy:
   #   name: Deployment
