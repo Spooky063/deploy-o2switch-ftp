@@ -1,0 +1,26 @@
+name: Deployment
+
+on:
+  workflows_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to update'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+jobs:
+  deploy:
+    name: Deployment
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deployment
+        run: |
+          echo "Environment $ENVIRONMENT"
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
