@@ -21,8 +21,8 @@ jobs:
     steps:
       - name: Configure SSH
         run: |
-          install -m 600 -D /dev/null ~/.ssh/github
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/github
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       
       - name: Connect
