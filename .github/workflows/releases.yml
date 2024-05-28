@@ -25,10 +25,10 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key:  ${{ secrets.SSH_KEY }}
-        script: |
-          whoami
-          ls -la
-          echo "Environment $ENVIRONMENT"
+          script: |
+            whoami
+            ls -la
+            echo "Environment $ENVIRONMENT"
         env:
           ENVIRONMENT: ${{ inputs.environment }}
   
