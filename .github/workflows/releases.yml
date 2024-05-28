@@ -1,7 +1,7 @@
 name: Deployment
 
 on:
-  workflows_dispatch:
+  workflow_dispatch:
     inputs:
       environment:
         description: 'Environment to update'
