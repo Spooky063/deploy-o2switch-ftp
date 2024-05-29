@@ -17,21 +17,36 @@ on:
         - production
 
 jobs:
-  ssh:
-    name: Deployment via SSH
-
+  deploy:
+    name: Deploy to production
     runs-on: ubuntu-latest
-
     steps:
-      - name: install ssh keys
+      - name: Deploy build to production
         run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-      - name: connect and pull
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami && exit"
-      - name: cleanup
-        run: rm -rf ~/.ssh
+          mkdir $PWD/.ssh
+          eval "$(ssh-agent -s)"
+          echo -n "${{ secrets.SSH_KEY }}" > $PWD/.ssh/id_rsa
+          chmod 600 $PWD/.ssh/id_rsa
+          ssh-add -k $PWD/.ssh/id_rsa
+          ssh-keyscan -t rsa ${{ secrets.SSH_HOST }} > $PWD/.ssh/known_hosts
+          ssh -o UserKnownHostsFile=$PWD/.ssh/known_hosts ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami"
+          rm $PWD/.ssh/id_rsa $PWD/.ssh/known_hosts
+
+  # ssh:
+    # name: Deployment via SSH
+
+    # runs-on: ubuntu-latest
+
+    # steps:
+    #   - name: install ssh keys
+    #     run: |
+    #       install -m 600 -D /dev/null ~/.ssh/id_rsa
+    #       echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+    #       ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+    #   - name: connect and pull
+    #     run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami && exit"
+    #   - name: cleanup
+    #     run: rm -rf ~/.ssh
 
 
       # - name: Checkout Repository
