@@ -139,11 +139,9 @@ jobs:
          with:
            path: "deployment"
            isAbsolutePath: false
-           file: "$ENVIRONMENT"
+           file: ${{ inputs.environment }}
            content: |
              ${{ github.sha }}
-         env:
-          ENVIRONMENT: ${{ inputs.environment }}
        - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
          with:
            server: ${{ secrets.FTP_HOST }}
