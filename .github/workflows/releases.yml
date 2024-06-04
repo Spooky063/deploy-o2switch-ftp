@@ -85,10 +85,18 @@ jobs:
       # - name: Try to launch command
       #   run: ssh app 'whoami'
 
+
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+      - name: Print Public IP
+        run: |
+          echo ${{ steps.ip.outputs.ipv4 }}
+          echo ${{ steps.ip.outputs.ipv6 }}
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
