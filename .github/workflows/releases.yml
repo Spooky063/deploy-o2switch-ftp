@@ -146,12 +146,12 @@ jobs:
            sparse-checkout: |
              deployment
            sparse-checkout-cone-mode: false
-       - uses: genietim/ftp-action@releases/v4
+       - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
          with:
-           host: ${{ secrets.FTP_HOST }}
-           user: ${{ secrets.FTP_USERNAME }}
+           server: ${{ secrets.FTP_HOST }}
+           username: ${{ secrets.FTP_USERNAME }}
            password: ${{ secrets.FTP_PASSWORD }}
-           localDir: "deployment"
-           remoteDir: "/home/yosu0027"
+           local-dir: "deployment"
+           server-ir: "/home/yosu0027"
   
   
