@@ -129,5 +129,29 @@ jobs:
             echo "Environment $ENVIRONMENT"
         env:
           ENVIRONMENT: ${{ inputs.environment }}
+
+  ftp:
+     name: Deployment via FTP
+     runs-on: ubuntu-latest
+     steps:
+       - uses: 1arp/create-a-file-action@0.4.5
+         with:
+           path: 'deployment'
+           isAbsolutePath: false
+           file: 'staging'
+           content: |
+             ${{ github.sha }}
+       - uses: actions/checkout@v4
+         with:
+           sparse-checkout: |
+             deployment
+           sparse-checkout-cone-mode: false
+       - uses: genietim/ftp-action@releases/v4
+         with:
+           host: ${{ secrets.FTP_HOST }}
+           user: ${{ secrets.FTP_USERNAME }}
+           password: ${{ secrets.FTP_PASSWORD }}
+           localDir: "deployment"
+           remoteDir: "/home/yosu0027"
   
   
