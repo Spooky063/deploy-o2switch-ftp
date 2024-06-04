@@ -134,6 +134,7 @@ jobs:
      name: Deployment via FTP
      runs-on: ubuntu-latest
      steps:
+       - uses: actions/checkout@v4
        - uses: 1arp/create-a-file-action@0.4.5
          with:
            path: 'deployment'
@@ -141,11 +142,6 @@ jobs:
            file: 'staging'
            content: |
              ${{ github.sha }}
-       - uses: actions/checkout@v4
-         with:
-           sparse-checkout: |
-             deployment
-           sparse-checkout-cone-mode: false
        - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
          with:
            server: ${{ secrets.FTP_HOST }}
