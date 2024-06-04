@@ -85,11 +85,22 @@ jobs:
       # - name: Try to launch command
       #   run: ssh app 'whoami'
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: whoami
+
   deploy:
     name: Deployment
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Deployment
         uses: appleboy/ssh-action@master
