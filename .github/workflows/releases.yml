@@ -152,6 +152,6 @@ jobs:
            username: ${{ secrets.FTP_USERNAME }}
            password: ${{ secrets.FTP_PASSWORD }}
            local-dir: "deployment"
-           server-ir: "/home/yosu0027"
+           server-dir: "/home/yosu0027"
   
   
