@@ -151,7 +151,7 @@ jobs:
            server: ${{ secrets.FTP_HOST }}
            username: ${{ secrets.FTP_USERNAME }}
            password: ${{ secrets.FTP_PASSWORD }}
-           local-dir: "deployment"
+           local-dir: "deployment/"
            server-dir: "/home/yosu0027"
   
   
