@@ -8,141 +8,35 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to update'
+        description: "Environment to update"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
         - staging
         - production
 
 jobs:
-  # deploy:
-  #   name: Deploy to production
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Deploy build to production
-  #       run: |
-  #         mkdir $PWD/.ssh
-  #         eval "$(ssh-agent -s)"
-  #         echo -n "${{ secrets.SSH_KEY }}" > $PWD/.ssh/id_rsa
-  #         chmod 600 $PWD/.ssh/id_rsa
-  #         ssh-add -k $PWD/.ssh/id_rsa
-  #         ssh-keyscan -t rsa ${{ secrets.SSH_HOST }} > $PWD/.ssh/known_hosts
-  #         ssh -o UserKnownHostsFile=$PWD/.ssh/known_hosts ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami"
-  #         rm $PWD/.ssh/id_rsa $PWD/.ssh/known_hosts
-
-  # ssh:
-    # name: Deployment via SSH
-
-    # runs-on: ubuntu-latest
-
-    # steps:
-    #   - name: install ssh keys
-    #     run: |
-    #       install -m 600 -D /dev/null ~/.ssh/id_rsa
-    #       echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-    #       ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-    #   - name: connect and pull
-    #     run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami && exit"
-    #   - name: cleanup
-    #     run: rm -rf ~/.ssh
-
-
-      # - name: Checkout Repository
-      #   uses: actions/checkout@v4
-
-      # - name: Configure SSH
-      #   uses: webfactory/ssh-agent@v0.9.0
-      #   with:
-      #     ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      # - name: Test
-      #   run: |
-      #     cd ${{ github.workspace }}
-      #     ssh-keyscan -t rsa ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      #     ssh -vvv ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "whoami"
-
-      # - name: Connect
-      #   run: |
-      #     mkdir -p ~/.ssh/
-      #     echo "$SSH_KEY" > ~/.ssh/staging.key
-      #     chmod 600 ~/.ssh/staging.key
-      #     cat >>~/.ssh/config <<END
-      #     Host *
-      #       LogLevel VERBOSE
-      #     Host app
-      #       HostName $SSH_HOST
-      #       User $SSH_USER
-      #       IdentityFile ~/.ssh/staging.key
-      #       StrictHostKeyChecking no
-      #     END
-      #   env:
-      #     SSH_USER: ${{ secrets.SSH_USER }}
-      #     SSH_KEY: ${{ secrets.SSH_KEY }}
-      #     SSH_HOST: ${{ secrets.SSH_HOST }}
-
-      # - name: Try to launch command
-      #   run: ssh app 'whoami'
-
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Public IP
-        id: ip
-        uses: haythem/public-ip@v1.3
-      - name: Print Public IP
-        run: |
-          echo ${{ steps.ip.outputs.ipv4 }}
-          echo ${{ steps.ip.outputs.ipv6 }}
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            whoami
-            ls -la
-            echo "Environment $ENVIRONMENT"
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
-
-  deploy:
-    name: Deployment
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deployment
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key:  ${{ secrets.SSH_KEY }}
-          debug: true
-          envs: ENVIRONMENT
-          script: |
-            whoami
-            ls -la
-            echo "Environment $ENVIRONMENT"
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
-
-  ftp:
-     name: Deployment via FTP
+  ftp_file_event:
+     name: "File deployment for ${{ inputs.environment }} environment"
+     
      runs-on: ubuntu-latest
+     
      steps:
-       - uses: actions/checkout@v4
-       - uses: 1arp/create-a-file-action@0.4.5
+       - name: Checkout project [unused]
+         uses: actions/checkout@v4
+
+       - name: "Create ${{ inputs.environment }} file to source"
+         uses: 1arp/create-a-file-action@0.4.5
          with:
            path: "deployment"
            isAbsolutePath: false
            file: ${{ inputs.environment }}
            content: |
              ${{ github.sha }}
-       - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+
+       - name: "Send ${{ inputs.environment }} file to server via FTP" 
+         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
          with:
            server: ${{ secrets.FTP_HOST }}
            username: ${{ secrets.FTP_USERNAME }}
