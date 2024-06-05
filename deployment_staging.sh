@@ -7,10 +7,10 @@ push_staging_env() {
 	local APP_FILENAME_PATH="django.yosu0027.odns.fr"
 	local APP_ROOT_PATH="/home/yosu0027"
 
-	source $APP_ROOT_PATH/virtualenv/$APP_FILENAME_PATH/$PYTHON_VERSION/bin/activate
-	cd APP_ROOT_PATH/APP_FILENAME_PATH
+	source "$APP_ROOT_PATH/virtualenv/$APP_FILENAME_PATH/$PYTHON_VERSION/bin/activate"
+	cd "$APP_ROOT_PATH/$APP_FILENAME_PATH"
 	git pull origin main
 	pip cache purge
 }
 
-push_staging_env()
+push_staging_env
