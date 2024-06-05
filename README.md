@@ -19,3 +19,11 @@ Sending the file by FTP will be done by Github Actions.
 And the execution of bash script to update the application will use: 
 - [watch](https://linux.die.net/man/1/watch) to check file update
 - [setsid](https://linux.die.net/man/1/setsid) to run bash script as deamon
+
+#### Use setsid
+
+To run it as a full deamon from a shell, let use the following command:
+
+```bash
+setsid /home/yosu0027/deployment_manager.sh >/dev/null 2>&1 </dev/null &
+```
