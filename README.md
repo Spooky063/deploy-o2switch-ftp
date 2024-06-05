@@ -17,5 +17,5 @@ We'll just use the modification date of a file we send via FTP as an event to ex
 
 Sending the file by FTP will be done by Github Actions.  
 And the execution of bash script to update the application will use: 
-- [inotifywait](https://linux.die.net/man/1/inotifywait) to check file update
+- [watch](https://linux.die.net/man/1/watch) to check file update
 - [setsid](https://linux.die.net/man/1/setsid) to run bash script as deamon
