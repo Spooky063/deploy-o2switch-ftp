@@ -10,6 +10,7 @@ push_production_env() {
 	source "$APP_ROOT_PATH/virtualenv/$APP_FILENAME_PATH/$PYTHON_VERSION/bin/activate"
 	cd "$APP_ROOT_PATH/$APP_FILENAME_PATH"
 	git pull origin main
+ 	pip install --no-cache-dir -r requirements.txt
 	pip cache purge
 }
 
